@@ -1,4 +1,3 @@
-
 package Modelo;
 
 import java.sql.Connection;
@@ -6,70 +5,89 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.JOptionPane;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Conexion {
+
     private Connection conexion;
-    private Statement sentencia;
-    private ResultSet resultados;
-   
     
-    
-  
-    //Aqui cargamos la libreria
-
-
-//Aqui se le envian el usuario de la base de datos, la clable y el nombre de la base de datos
-public Conexion(String usuario, String pass, String baseDeDatos) throws ClassNotFoundException, SQLException {
-
-    Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-    
-       //Nos conectamos a la BD
-       conexion = DriverManager.getConnection (
-			"jdbc:derby://localhost:1527/"+baseDeDatos,
-			usuario,pass);
-
-}
-
-
-public ResultSet ejecutarConsulta(String sql){
-
-    return null;
-
-}
-
-public boolean insertar(usuario usuario) throws SQLException{
-
-    String user=usuario.getUsuario();
-    sentencia=conexion.createStatement();
-    resultados=sentencia.executeQuery("SELECT * FROM usuario where usuario='"+user+"'");
-    conexion.close();
-    
-    if(!resultados.next()){
-        sentencia=conexion.createStatement();
-        int n=sentencia.executeUpdate("INSERT INTO usuario "+
-		     "VALUES('"+usuario.getNombre()+"','"+usuario.getApellidos()+"','"+usuario.getCorreo()+"','"+usuario.getUsuario()+"','"+usuario.getPassword()+"')");
- 
-        conexion.close();
-       return true;
-
+    public boolean insertarUsuario(Usuario usuario) {
+        boolean ok = false;
+        
+        conectar();
+        
+        try {
+            Statement sentencia = conexion.createStatement();
+            int n =  sentencia.executeUpdate("INSERT INTO moi.usuario (nombre, apellidos, correo, usuario, password) "
+                    + "VALUES('" + usuario.getNombre() + "','" + usuario.getApellidos() + "','" + usuario.getCorreo() + "','" + usuario.getUsuario() + "','" + usuario.getPassword() + "')");
+            ok = (n==1);
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            desconectar();
+            return ok;
+        }
     }
     
-    return false;
-
-}
-
-
-
- 
- public void cerrarConsulta() throws SQLException{
- 
-  conexion.close();
- 
- 
- }
-
-
+    public boolean existeUsuario(String usuario) {
+        boolean existe = false;
+        
+        conectar();
+        
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet resultados = sentencia.executeQuery("SELECT * FROM moi.usuario WHERE usuario='" + usuario + "'");
+            if(resultados != null && resultados.next()) {
+                existe = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            desconectar();
+            return existe;
+        }
+    }
     
+    public boolean existeUsuario(String usuario, String password) {
+        boolean existe = false;
+        
+        conectar();
+        
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet resultados = sentencia.executeQuery("SELECT * FROM moi.usuario WHERE usuario='" + usuario + "' AND password='"+ password +"'");
+            if(resultados != null && resultados.next()) {
+                existe = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            desconectar();
+            return existe;
+        }
+    }
+    
+    private void conectar() {
+        try {
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+            //Nos conectamos a la BD
+            conexion = DriverManager.getConnection(
+                    "jdbc:derby://localhost:1527/DBUsuarios",
+                    "moi", "123");
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void desconectar() {
+        try {
+            conexion.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            conexion = null;
+        }
+    }
+
 }

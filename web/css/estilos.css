@@ -75,5 +75,9 @@
        color: #6EA070;
        display:none;  
     }
+    
+    .mensajeError {
+        color: red;
+    }
 
 
