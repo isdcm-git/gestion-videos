@@ -40,28 +40,16 @@
             <h3 class="mensajeError"><%=mensaje%></h3>
             <% } %>
             
-            <form  action="http://localhost:8080/Gestion_De_Videos/ServletRegistroUsu" method="POST">  
-                <label for="name">Nombre: <span class="required">*</span></label>  
-                <input type="text" id="name" name="name" value="" placeholder="" required="required" autofocus="autofocus" />
-
-                <label for="name">Apellidos: <span class="required">*</span></label>  
-                <input type="text" id="apellidos" name="apellidos" value="" placeholder="" required="required" autofocus="autofocus" /> 
-
-                <label for="email">Correo Electrónico: <span class="required">*</span></label>  
-                <input type="email" id="email" name="email" value="" placeholder="your@email.com" required="required" />  
-
+            <form  action="http://localhost:8080/Gestion_De_Videos/ServletLogin" method="POST">  
+                
                 <label for="name">Nombre usuario: <span class="required">*</span></label>  
                 <input type="text" id="usuario" name="usuario" placeholder="" required="required" autofocus="autofocus" /> 
 
                 <label for="name">Contraseña: <span class="required">*</span></label>  
                 <input type="password" id="password" name="password"  placeholder="" required="required" autofocus="autofocus" /> 
 
-                <label for="name">Repetir contraseña: <span class="required">*</span></label>  
-                <input type="password" id="repassword" name="repassword" value="" placeholder="" required="required" autofocus="autofocus" /> 
-
-                <input type="submit" value="Registrar" id="submit" onclick= ""/>
-            </form>
-            <a href="login.jsp">Login</a>
+                <input type="submit" value="Login" id="submit" onclick= ""/>
+            </form>  
         </div>
     </body>
 </html>

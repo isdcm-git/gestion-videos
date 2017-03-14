@@ -64,7 +64,32 @@ public class Conexion {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             desconectar();
+            System.out.println(existe);
             return existe;
+        }
+    }
+    
+    public Usuario obtenerUsuario(String user, String password) {
+        Usuario usuario = null;
+        
+        conectar();
+        
+        try {
+            Statement sentencia = conexion.createStatement();
+            ResultSet resultados = sentencia.executeQuery("SELECT * FROM moi.usuario WHERE usuario='" + usuario + "' AND password='"+ password +"'");
+            if(resultados != null && resultados.next()) {
+                usuario = new Usuario();
+                usuario.setNombre(resultados.getString("nombre"));
+                usuario.setApellidos(resultados.getString("apellidos"));
+                usuario.setCorreo(resultados.getString("correo"));
+                usuario.setUsuario(resultados.getString("usuario"));
+                usuario.setPassword(resultados.getString("password"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            desconectar();
+            return usuario;
         }
     }
     
